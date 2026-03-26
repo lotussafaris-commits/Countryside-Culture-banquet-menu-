@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countryside Culture - Ultimate FINAL</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body{margin:0;font-family:Poppins;background:#0f2d1f;color:white;}
+.container{max-width:950px;margin:auto;padding:20px;}
+.logo{text-align:center}
+.logo img{width:150px}
+.card{background:#1b3a2a;padding:20px;border-radius:16px;margin:15px 0}
+button{background:#d4af37;border:none;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer}
+input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:none}
+.hidden{display:none}
+.category{color:#d4af37;margin-top:15px;font-weight:bold}
+</style>
+</head>
+
+<body>
+<div class="container">
+<div class="logo"><img src="/mnt/data/CC Logo.jpg"></div>
+
+<div id="s1" class="card">
+<h2>Booking</h2>
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<input id="guests" placeholder="Guests">
+<input id="date" type="date">
+<button onclick="next1()">Next</button>
+</div>
+
+<div id="s2" class="card hidden">
+<h2>Package</h2>
+<button onclick="pkg=900">₹900</button>
+<button onclick="pkg=1200">₹1200</button>
+<button onclick="pkg=1700">₹1700</button>
+<button onclick="pkg=2000">₹2000</button>
+<br><br>
+<button onclick="next2()">Next</button>
+</div>
+
+<div id="s3" class="card hidden">
+<h2>Menu</h2>
+<div id="menu"></div>
+<button onclick="next3()">Next</button>
+</div>
+
+<div id="s4" class="card hidden">
+<h2>Add-ons</h2>
+<label><input type="checkbox" value="Decoration"> Decoration</label><br>
+<label><input type="checkbox" value="DJ"> DJ</label><br>
+<label><input type="checkbox" value="LED"> LED</label><br>
+<button onclick="next4()">Next</button>
+</div>
+
+<div id="s5" class="card hidden">
+<h2>Summary</h2>
+<div id="summary"></div>
+<button onclick="wa()">WhatsApp</button>
+<button onclick="pdf()">PDF</button>
+</div>
+
+</div>
+
+<script>
+let pkg="";
+
+function show(a,b){document.getElementById(a).classList.remove('hidden');document.getElementById(b).classList.add('hidden');}
+
+function next1(){
+let n=name.value.trim(),p=phone.value.trim(),g=guests.value.trim(),d=date.value;
+if(!n||!p||!g||!d){alert('Fill all fields');return;}
+show('s2','s1');
+}
+
+function next2(){if(!pkg){alert('Select package');return;} show('s3','s2'); loadMenu();}
+
+function loadMenu(){
+let menu={
+"Mocktails (Any 2)":["Virgin Mojito","Blue Lagoon","Pineapple","Orange Punch"],
+"Starters (Any 3)":["Paneer Tikka","Crispy Corn","Hara Bhara","Spring Roll"],
+"Chaat (Any 2)":["Pani Puri","Dahi Bhalla","Sev Puri"],
+"Main Course (Any 4)":["Paneer Butter","Kadhai Paneer","Dal Makhni","Mix Veg","Kofta"],
+"Rice (Any 1)":["Jeera Rice","Veg Biryani"],
+"Bread (Any 2)":["Butter Naan","Roti","Paratha"],
+"Dessert (Any 1)":["Gulab Jamun","Ice Cream"]
+};
+
+let html="";
+for(let c in menu){
+html+=`<div class='category'>${c}</div>`;
+menu[c].forEach(i=>{
+html+=`<label><input type='checkbox' value='${i}'> ${i}</label><br>`;
+});
+}
+menuDiv.innerHTML=html;
+}
+
+function next3(){show('s4','s3');}
+
+function next4(){
+show('s5','s4');
+let sel=[...document.querySelectorAll('input:checked')].map(e=>e.value);
+summary.innerText=`Name: ${name.value}\nGuests: ${guests.value}\nPackage: ₹${pkg}\n\nItems:\n${sel.join('\n')}`;
+}
+
+function wa(){window.open("https://wa.me/919399112276?text="+encodeURIComponent(summary.innerText));}
+
+function pdf(){
+const { jsPDF } = window.jspdf;
+let doc=new jsPDF();
+doc.text("Countryside Culture",20,20);
+doc.text(summary.innerText,20,40);
+doc.save("quotation.pdf");
+}
+
+</script>
+
+</body>
+</html>
